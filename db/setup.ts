@@ -62,40 +62,46 @@ function createWorks(){
     const works = [
         {
             id:1,
-            job: "Tour Guide",
-            description:"Tour guides are often the most direct expression of a museum’s main goal: to educate. They show visitors around museums; answer questions; and provide specific knowledge about objects, historical periods, and exhibitions. Tour guides must have great people skills and the ability to retain a lot of information, offering it up as visitors ask questions.",
+            work: "Irises",
+            author:"Vincent van Gogh",
+            image:"https://www.vincentvangogh.org/images/paintings/irises.jpg",
             museumId:1
         },
         {
             id:2,
-            job: "Curator",
-            description:"Museum curators are responsible for maintaining part or all of a museum’s collection. They can sell or acquire new pieces, decide what to store and what to display, and set the museum’s tone by selecting different exhibition designs and themes. Curators must have deep knowledge in their area and may also help with outreach and public relations.",
-            museumId:1
+            work: "Wright Flyer",
+            author:"The Wright Brothers",
+            image:"https://www.nps.gov/common/uploads/stories/images/nri/20160902/articles/2D3ACA52-1DD8-B71B-0B2E5304562E32D0/2D3ACA52-1DD8-B71B-0B2E5304562E32D0.jpg",
+            museumId:2
         },
         {
             id:3,
-            job: "Archivist",
-            description:"Archivists help preserve and maintain documents, files, and other artifacts. They may use different techniques, such as restoration, or preserve pieces in specialized storage vaults or humidified rooms. Archivists often handle sensitive documents or artwork, helping to determine if they are ready for display as well as their condition. Archivists manage archives using spreadsheets and other organizational tools.",
+            work: "Command Module, Apollo 11",
+            author:"North American Rockwell",
+            image:"https://assets.newatlas.com/dims4/default/fc62440/2147483647/strip/true/crop/1627x1080+0+0/resize/1627x1080!/quality/90/?url=http%3A%2F%2Fnewatlas-brightspot.s3.amazonaws.com%2Farchive%2Fapollo-11-tour-11.jpg",
             museumId:2
         },
         {
             id:4,
-            job: "Outreach Director",
-            description:"Outreach directors are the connection between museums and the public. These professionals often play a large role in attracting funding and general support for a museum. Outreach directors can arrange for school tours or send museum representatives to the schools themselves. They may also meet with potential donors to sell them on the merits of their institution or plan fundraising events.",
+            work: "mona lisa",
+            author:"Leonardo da Vinci",
+            image:"https://upload.wikimedia.org/wikipedia/commons/thumb/e/ec/Mona_Lisa%2C_by_Leonardo_da_Vinci%2C_from_C2RMF_retouched.jpg/640px-Mona_Lisa%2C_by_Leonardo_da_Vinci%2C_from_C2RMF_retouched.jpg",
             museumId:3
         },
         {
             id:5,
-            job: "Volunteer",
-            description:"Volunteers fill many different roles at museums. They can serve as tour guides and docents, work in the visitors centers as greeters, help with maintenance, or act as informational hosts for exhibitions. Many museums rely on volunteer workers, who often enjoy perks such as complimentary parking and free visits to special exhibitions around town.",
+            work: "The Night Watch",
+            author:"Rembrandt van Rijn",
+            image:"https://upload.wikimedia.org/wikipedia/commons/thumb/5/5a/The_Night_Watch_-_HD.jpg/1200px-The_Night_Watch_-_HD.jpg",
             museumId:3
         }
     ]
     const createworktable = db.prepare(`
     CREATE TABLE IF NOT EXISTS works (
         id INTEGER NOT NULL,
-        job TEXT NOT NULL,
-        description TEXT NOT NULL,
+        work TEXT NOT NULL,
+        author TEXT NOT NULL,
+        image TEXT NOT NULL,
         museumId INTEGER NOT NULL,
         PRIMARY KEY (id),
         FOREIGN KEY (museumId) REFERENCES museums(id)
@@ -109,10 +115,10 @@ function createWorks(){
     deleteWorks.run()
     
     const creaateWorks = db.prepare(`
-    INSERT INTO works (job, description, museumId) VALUES (?,?,?);
+    INSERT INTO works (work, author, image, museumId) VALUES (?,?,?,?);
     `)
     for (let work of works) {
-        creaateWorks.run(work.job, work.description, work.museumId)
+        creaateWorks.run(work.work, work.author, work.image, work.museumId)
     }
     
 }

@@ -75,6 +75,61 @@ app.get ('/works/:id', (req, res) => {
 }
 )
 
+// POST MUSEUM
+const postMuseum = db.prepare(`
+INSERT INTO museums (name, type, location) VALUES (?, ?, ?);
+`)
+app.post('/museums', (req, res) => {
+  const name = req.body.name
+  const type = req.body.type
+  const location = req.body.location
+    let errors: string[] = []
+    
+    if (typeof req.body.name !== 'string') {
+        errors.push('Add a proper NAME!')
+      }
+   
+    if(typeof req.body.type  !=='string') {
+        errors.push('Add a proper TYPE OF MUSEUM')
+    }
+    if (typeof req.body.location !== 'string') {
+      errors.push('Add a proper LOCATION!')
+    }
+    if( errors.length === 0)  {
+      const museum = postMuseum.run(name, type, location)
+      const newmuseum = getMuseumsById.get(museum.lastInsertRowid)
+      res.send(newmuseum)
+    }
+    else {
+        res.status(400).send({ errors: errors })
+      }
+})
+app.post('/works', (req, res) => {
+  const name = req.body.name
+  const type = req.body.type
+  const location = req.body.location
+    let errors: string[] = []
+    
+    if (typeof req.body.name !== 'string') {
+        errors.push('Add a proper NAME!')
+      }
+   
+    if(typeof req.body.type  !=='string') {
+        errors.push('Add a proper TYPE OF MUSEUM')
+    }
+    if (typeof req.body.location !== 'string') {
+      errors.push('Add a proper LOCATION!')
+    }
+    if( errors.length === 0)  {
+      const museum = postMuseum.run(name, type, location)
+      const newmuseum = getMuseumsById.get(museum.lastInsertRowid)
+      res.send(newmuseum)
+    }
+    else {
+        res.status(400).send({ errors: errors })
+      }
+})
+
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
 })
