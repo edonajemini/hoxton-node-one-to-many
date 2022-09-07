@@ -104,32 +104,53 @@ app.post('/museums', (req, res) => {
         res.status(400).send({ errors: errors })
       }
 })
+//POST WORK
+
+const postWork = db.prepare(`
+INSERT INTO works (work, author, image, museumId) VALUES (?, ?, ?,?);
+`)
 app.post('/works', (req, res) => {
-  const name = req.body.name
-  const type = req.body.type
-  const location = req.body.location
+  const work = req.body.work
+  const author = req.body.author
+  const image = req.body.image
+  const museumId = req.body.museumId
     let errors: string[] = []
     
-    if (typeof req.body.name !== 'string') {
-        errors.push('Add a proper NAME!')
+    if (typeof req.body.work !== 'string') {
+        errors.push('Add a proper WORK!')
       }
    
-    if(typeof req.body.type  !=='string') {
-        errors.push('Add a proper TYPE OF MUSEUM')
+    if(typeof req.body.author  !=='string') {
+        errors.push('Add a proper TYPE OF AUTHOR')
     }
-    if (typeof req.body.location !== 'string') {
-      errors.push('Add a proper LOCATION!')
+    if (typeof req.body.image !== 'string') {
+      errors.push('Add a proper IMAGE!')
+    }
+    if (typeof req.body.museumId !== 'number') {
+      errors.push('Add a proper MUSEUMID NUMBER!')
     }
     if( errors.length === 0)  {
-      const museum = postMuseum.run(name, type, location)
-      const newmuseum = getMuseumsById.get(museum.lastInsertRowid)
-      res.send(newmuseum)
+      const workInfo = postWork.run(work, author, image, museumId)
+      const newWork = getWorksById.get(workInfo.lastInsertRowid)
+      res.send(newWork)
     }
     else {
         res.status(400).send({ errors: errors })
       }
 })
-
+const deleteWorks = db.prepare(`
+DELETE FROM works WHERE id = ?;
+`)
+app.delete('/works/:id', (req, res) => {
+  const id = Number(req.params.id)
+  const work = deleteWorks.run(id)
+    if (work) {
+        res.send({ message: 'Work deleted successfully.' })
+    }
+    else {
+        res.status(404).send({ error: 'Work not found.' })
+      }
+})
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
 })
