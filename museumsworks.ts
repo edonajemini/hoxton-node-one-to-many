@@ -154,6 +154,19 @@ app.delete('/works/:id', (req, res) => {
         res.status(404).send({ error: 'Work not found.' })
       }
 })
+const deleteMuseums = db.prepare(`
+DELETE FROM museums WHERE id = ?;
+`)
+app.delete('/museums/:id', (req, res) => {
+  const id = Number(req.params.id)
+  const museum = deleteMuseums.run(id)
+    if (museum) {
+        res.send({ message: 'Museum deleted successfully.' })
+    }
+    else {
+        res.status(404).send({ error: 'Museum not found.' })
+      }
+})
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
 })
