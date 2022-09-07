@@ -18,21 +18,36 @@ app.get('/', (req, res) => {
   `)
 })
 
-//GET MUSEUMS WITH WORKS
+//GET MUSEUMS 
 const getMuseums = db.prepare(`
 SELECT * FROM museums;
 `)
+
+app.get('/museums', (req, res) => {
+  const museums = getMuseums.all()
+  res.send(museums)
+})
+//GET MUSEUMS IN DETAILS
 const getWorksforMuseums = db.prepare(`
 SELECT * FROM works WHERE museumId = ?;
 `)
-app.get('/museums', (req, res) => {
-  const museums = getMuseums.all()
-  for (let museum of museums){
+const getMuseumsById = db.prepare(`
+SELECT * FROM museums WHERE id = ?;
+`)
+
+app.get ('/museums/:id', (req, res) => {
+  const id = Number(req.params.id)
+  const museum = getMuseumsById.get(id)
+  if(museum){
     const works = getWorksforMuseums.all(museum.id)
     museum.works = works
+    res.send(museum)
   }
-  res.send(museums)
-})
+    else {
+        res.status(404).send({ error: `Museum doesn't exist!` })
+    }
+}
+)
 //GET WORKS
 const getWorks = db.prepare(`
 SELECT * FROM works;
@@ -42,32 +57,20 @@ app.get('/works', (req, res) => {
     const works = getWorks.all()
     res.send(works)
 })
-//GET MUSEUMS BY ID
-const getMuseumsById = db.prepare(`
-SELECT * FROM museums WHERE id = ?;
-`)
 
-app.get ('/museums/:id', (req, res) => {
-  const id = Number(req.params.id)
-  const museum = getMuseumsById.get(id)
-    if (museum) {
-        res.send(museum)
-    }
-    else {
-        res.status(404).send({ error: `Museum doesn't exist!` })
-    }
-}
-)
-//GET WORKS BY ID
+//GET WORKS IN DETAILS
 const getWorksById = db.prepare(`
 SELECT * FROM works WHERE id = ?;
 `)
 
-app.get ('/works/:id', (req, res) => {
+app.get('/works/:id', (req, res) => {
   const id = Number(req.params.id)
   const work = getWorksById.get(id)
+
     if (work) {
-        res.send(work)
+      const museum = getMuseumsById.get(work.museumId)
+      work.museum = museum
+      res.send(work)
     }
     else {
         res.status(404).send({ error: `Work doesn't exist!` })
