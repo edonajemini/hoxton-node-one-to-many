@@ -44,6 +44,11 @@ function createmuseums () {
       );
     `)
     createmuseumstable.run()
+
+    const deleteallWorks = db.prepare(`
+    DELETE from works;
+    `)
+    deleteallWorks.run()
     
     const deleteMuseums = db.prepare(`
     DELETE from museums;
